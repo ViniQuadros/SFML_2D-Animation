@@ -1,0 +1,63 @@
+# =========================
+# Build directories
+# =========================
+out/
+build/
+bin/
+Debug/
+Release/
+x64/
+x86/
+
+# =========================
+# CMake generated files
+# =========================
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Testing/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps/
+CMakeLists.txt.user
+CMakeUserPresets.json
+
+# =========================
+# Visual Studio files
+# =========================
+.vs/
+*.vcxproj.user
+*.vcxproj.filters
+*.sln.cache
+*.VC.db
+*.VC.opendb
+
+# =========================
+# Executables and binaries
+# =========================
+*.exe
+*.dll
+*.lib
+*.obj
+*.pdb
+*.ilk
+
+# =========================
+# SFML local libraries
+# =========================
+lib/
+include/
+
+# =========================
+# OS generated files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Logs
+# =========================
+*.log
