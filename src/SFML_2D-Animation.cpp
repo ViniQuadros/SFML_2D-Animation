@@ -11,7 +11,6 @@ int main()
     sf::Clock clock;
 
     Character soldier;
-    soldier.setPosition({ 100,250 });
 
     while (window.isOpen())
     {
@@ -21,12 +20,11 @@ int main()
                 window.close();
         }
 
-        float deltaTime = clock.restart().asSeconds();
-
-        soldier.update(deltaTime);
+        sf::Time deltaTime = clock.restart();
 
         window.clear();
 
+        soldier.update(deltaTime.asSeconds());
         soldier.draw(window);
 
         window.display();
