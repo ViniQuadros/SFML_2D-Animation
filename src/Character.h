@@ -13,25 +13,21 @@ class Character {
 	public:
 		Character();
 
-		void update(float deltaTime);
+		virtual void update(float deltaTime);
 		void draw(sf::RenderWindow& window);
 
-		void movement(float deltaTime);
-		void attack(float deltaTime);
 		void changeState(AnimationStates newState);
 
 		const sf::Sprite& getCharSprite() const;
 
-	private:
+	protected:
 		float m_Scale = 3.f;
 		bool isMoving = false;
 		bool m_isFacingLeft = false;
 		bool m_ShiftHeld = false;
 		bool isAttacking = false;
 
-		sf::Vector2f m_Position = {100.f, 250.f};
-		float m_Speed = 10.f;
-		float m_RunningSpeed = 50.0f;
+		sf::Vector2f m_Position;
 
 		AnimationStates currentState = Idle;
 		sf::Texture m_IdleTexture;
@@ -41,4 +37,6 @@ class Character {
 		Animation m_IdleAnimation;
 		Animation m_WalkAnimation;
 		Animation m_AttackAnimation;
+
+	private:
 };

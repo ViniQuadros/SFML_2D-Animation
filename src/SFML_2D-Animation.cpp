@@ -1,7 +1,8 @@
 ﻿#include "SFML_2D-Animation.h"
 #include <SFML/Graphics.hpp>
-#include "Character.h"
 
+#include "Player.h"
+#include "Enemy.h"
 
 int main()
 {
@@ -10,7 +11,8 @@ int main()
 
     sf::Clock clock;
 
-    Character soldier;
+    Player soldier;
+    Enemy orc;
 
     while (window.isOpen())
     {
@@ -26,6 +28,8 @@ int main()
 
         soldier.update(deltaTime.asSeconds());
         soldier.draw(window);
+        orc.update(deltaTime.asSeconds());
+        orc.draw(window);
 
         window.display();
     }

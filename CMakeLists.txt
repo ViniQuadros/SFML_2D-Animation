@@ -12,7 +12,7 @@ endif()
 project ("SFML_2D-Animation")
 
 # Adicione a origem ao executável deste projeto.
-add_executable (SFML_2D-Animation "src/SFML_2D-Animation.cpp" "src/SFML_2D-Animation.h"   "src/Character.h" "src/Character.cpp"   "src/Animation.h" "src/Animation.cpp")
+add_executable (SFML_2D-Animation "src/SFML_2D-Animation.cpp" "src/SFML_2D-Animation.h"   "src/Character.h" "src/Character.cpp"   "src/Animation.h" "src/Animation.cpp"   "src/Enemy.h" "src/Player.h" "src/Player.cpp" "src/Enemy.cpp")
 target_link_libraries(SFML_2D-Animation ${CMAKE_SOURCE_DIR}/lib/sfml-graphics.lib)
 target_link_libraries(SFML_2D-Animation ${CMAKE_SOURCE_DIR}/lib/sfml-window.lib)
 target_link_libraries(SFML_2D-Animation ${CMAKE_SOURCE_DIR}/lib/sfml-system.lib)
