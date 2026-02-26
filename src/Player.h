@@ -1,5 +1,6 @@
 #pragma once
 #include "Character.h"
+#include <algorithm>
 
 class Player : public Character
 {
@@ -11,6 +12,6 @@ public:
 	void attack(float deltaTime);
 
 private:
-	float m_Speed = 10.f;
+	float m_Speed = 20.f;
 	float m_RunningSpeed = 50.0f;
 };

@@ -23,13 +23,7 @@ Character::Character() {
 }
 
 void Character::update(float deltaTime){
-	//DEBUGGING
-	//std::cout << "********************" "\n";
-	//std::cout << "X" << m_Position.x << "\n";
-	//std::cout << "Y" << m_Position.y << "\n";
-	//std::cout << "X" << m_Sprite.getOrigin().x << "\n";
-	//std::cout << "Y" << m_Sprite.getOrigin().y << "\n";
-	//std::cout << "********************" "\n";
+
 }
 
 void Character::draw(sf::RenderWindow& window)

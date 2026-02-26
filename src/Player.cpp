@@ -57,6 +57,22 @@ void Player::movement(float deltaTime)
 
 	m_Sprite.setPosition(m_Position);
 
+	//Screen Borders
+	if (m_Position.x > 800 - m_Sprite.getOrigin().x / 2.f) {
+		m_Position.x = 800 - m_Sprite.getOrigin().x / 2.f;
+	}
+	//Left
+	if (m_Position.x < m_Sprite.getOrigin().x / 2.f) {
+		m_Position.x = m_Sprite.getOrigin().x / 2.f;
+	}
+	if (m_Position.y > 600 - m_Sprite.getOrigin().x / 2.f) {
+		m_Position.y = 600 - m_Sprite.getOrigin().x / 2.f;
+	}
+	//Top
+	if (m_Position.y < m_Sprite.getOrigin().x / 2.f) {
+		m_Position.y = m_Sprite.getOrigin().x / 2.f;
+	}
+
 	//Select proper sprite animations of movement
 	if (isMoving)
 	{
