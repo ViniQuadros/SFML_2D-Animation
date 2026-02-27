@@ -40,9 +40,14 @@ int main()
         window.clear();
 
         window.draw(mapSprite);
+
         orc.update(deltaTime.asSeconds());
         orc.draw(window);
+
         soldier.update(deltaTime.asSeconds());
+        if (soldier.isColliding(orc.getCharBounds())) {
+            std::cout << "Colliding with enemy\n";
+        }
         soldier.draw(window);
 
         window.display();
