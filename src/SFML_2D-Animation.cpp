@@ -2,9 +2,7 @@
 #define SCREEN_HEIGHT 600
 
 #include "SFML_2D-Animation.h"
-
 #include <SFML/Graphics.hpp>
-
 #include "Player.h"
 #include "Enemy.h"
 
@@ -46,9 +44,23 @@ int main()
 
         soldier.update(deltaTime.asSeconds());
         if (soldier.isColliding(orc.getCharBounds())) {
-            std::cout << "Colliding with enemy\n";
+            soldier.takeDamage(orc.GetCharDamage(), deltaTime.asSeconds());
         }
         soldier.draw(window);
+
+        //DEBUG COLLISION
+        //auto drawBounds = [&](const sf::FloatRect& rect, sf::Color color) {
+        //    sf::RectangleShape debugBox;
+        //    debugBox.setPosition(rect.position);
+        //    debugBox.setSize(rect.size);
+        //    debugBox.setFillColor(sf::Color::Transparent);
+        //    debugBox.setOutlineColor(color);
+        //    debugBox.setOutlineThickness(1.f);
+        //    window.draw(debugBox);
+        //    };
+
+        //drawBounds(soldier.getCharBounds(), sf::Color::Red);
+        //drawBounds(orc.getCharBounds(), sf::Color::Green);
 
         window.display();
     }

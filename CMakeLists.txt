@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.h")
 
+add_subdirectory(external/box2d)
+
 add_executable(SFML_2D-Animation ${SOURCES})
 
 target_include_directories(SFML_2D-Animation PRIVATE 
@@ -15,6 +17,7 @@ target_include_directories(SFML_2D-Animation PRIVATE
 
 target_link_libraries(SFML_2D-Animation
     PRIVATE
+    box2d
     "${CMAKE_SOURCE_DIR}/lib/sfml-graphics.lib"
     "${CMAKE_SOURCE_DIR}/lib/sfml-window.lib"
     "${CMAKE_SOURCE_DIR}/lib/sfml-system.lib"

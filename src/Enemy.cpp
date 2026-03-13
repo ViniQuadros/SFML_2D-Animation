@@ -15,7 +15,7 @@ Enemy::Enemy()
 
 void Enemy::update(float deltaTime)
 {
-	if (currentState != Idle)
+	if (m_CurrentState != Idle)
 		changeState(Idle);
 
 	m_IdleAnimation.update(deltaTime);

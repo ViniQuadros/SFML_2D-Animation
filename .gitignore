@@ -46,10 +46,11 @@ CMakeUserPresets.json
 *.ilk
 
 # =========================
-# SFML local libraries
+# SFML local libraries and external libraries
 # =========================
 lib/
 include/
+external/
 
 # =========================
 # OS generated files
