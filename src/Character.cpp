@@ -30,11 +30,18 @@ Character::Character() {
 		m_DeathAnimation.setLoop(false);
 
 		changeState(Idle);
+
+		bodyDef.type = b2_dynamicBody;
+		bodyDef.linearDamping = 5.0f;
 }
 
 void Character::update(float deltaTime) {
 	if (m_DamageCooldown > 0) {
 		m_DamageCooldown -= deltaTime;
+	}
+
+	if (m_KnockbackTimer > 0) {
+		m_KnockbackTimer -= deltaTime;
 	}
 }
 
@@ -69,24 +76,20 @@ void Character::knockback()
 {
 	if (!b2Body_IsValid(m_Body)) return;
 
-	//Get the current mass to ensure the force is applied
-	float mass = b2Body_GetMass(m_Body);
-	float knockbackMagnitude = 10.0f * mass; 
-	float verticalLift = -5.0f * mass;
+	float knockbackMagnitude = 5000.0f;
 
 	b2Vec2 impulse;
-	if (m_Sprite.getScale().x > 0) {
-		//Facing Left
-		impulse = { -knockbackMagnitude, verticalLift };
+	if (m_isFacingLeft) {
+		impulse = { knockbackMagnitude, 0.0f };
 	}
 	else {
-		//Facing Right
-		impulse = { knockbackMagnitude, verticalLift };
+		impulse = { -knockbackMagnitude, 0.0f };
 	}
 
-	//Apply the impulse
 	b2Body_SetLinearVelocity(m_Body, { 0.0f, 0.0f });
 	b2Body_ApplyLinearImpulseToCenter(m_Body, impulse, true);
+
+	m_KnockbackTimer = 0.25f;
 }
 
 bool Character::isColliding(const sf::FloatRect& other) const

@@ -31,11 +31,14 @@ class Character {
 
 	protected:
 		b2BodyId m_Body;
+		b2BodyDef bodyDef = b2DefaultBodyDef();
 
 		int m_Health = 30;
 		int m_Damage = 10;
 		float m_DamageCooldown = 0.0f;
 		const float m_InvencibilityDuration = 0.5f;
+		float m_KnockbackTimer = 0.0f;
+		const float m_StunDuration = 0.25f;
 
 		float m_Scale = 3.f;
 		bool m_IsMoving = false;

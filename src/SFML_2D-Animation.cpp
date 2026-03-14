@@ -3,6 +3,7 @@
 
 #include "SFML_2D-Animation.h"
 #include <SFML/Graphics.hpp>
+#include "box2d/box2d.h"
 #include "Player.h"
 #include "Enemy.h"
 
@@ -22,7 +23,12 @@ int main()
     mapSprite.setScale({ 1.7f, 2.f });
     mapSprite.setPosition({ 400,300 });
 
-    Player soldier;
+    //Box2D configuration
+    b2WorldDef worldDef = b2DefaultWorldDef();
+    worldDef.gravity = { 0.0f, 0.0f };
+    b2WorldId worldId = b2CreateWorld(&worldDef);
+
+    Player soldier = Player(worldId);
     Enemy orc;
 
     while (window.isOpen())

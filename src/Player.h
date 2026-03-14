@@ -5,7 +5,7 @@
 class Player : public Character
 {
 public:
-	Player();
+	Player(b2WorldId& worldId);
 
 	void update(float deltaTime) override;
 	void movement(float deltaTime);

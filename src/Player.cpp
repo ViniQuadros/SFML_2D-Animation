@@ -1,6 +1,6 @@
 #include "Player.h"
 
-Player::Player()
+Player::Player(b2WorldId& worldId)
 {
 	m_IdleTexture.loadFromFile("CharactersSprites/Soldier/Soldier/Soldier-Idle.png");
 	m_WalkTexture.loadFromFile("CharactersSprites/Soldier/Soldier/Soldier-Walk.png");
@@ -11,6 +11,9 @@ Player::Player()
 
 	m_Position = { 100, 250 };
 	m_Sprite.setPosition(m_Position);
+
+	bodyDef.position = { 100.0f, 250.0f };
+	m_Body = b2CreateBody(worldId, &bodyDef);
 }
 
 void Player::update(float deltaTime)
@@ -38,26 +41,34 @@ void Player::movement(float deltaTime)
 	m_ShiftHeld = shiftPressed;
 
 	//Movement inputs
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::W)) {
-		m_Position.y -= movementSpeed;
-		m_IsMoving = true;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::S)) {
-		m_Position.y += movementSpeed;
-		m_IsMoving = true;
-	}
+	// 1. Check if we are currently being knocked back (stunned)
+	// If you haven't added m_KnockbackTimer yet, do so in update()
+	if (m_KnockbackTimer > 0) return;
+
+	m_IsMoving = false;
+	b2Vec2 velocity = { 0.0f, 0.0f };
+	float speed = shiftPressed ? m_RunningSpeed : m_Speed;
+
+	// 2. Set velocity vectors instead of positions
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::W)) velocity.y -= speed;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::S)) velocity.y += speed;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::A)) {
-		m_Position.x -= movementSpeed;
+		velocity.x -= speed;
 		m_isFacingLeft = true;
-		m_IsMoving = true;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::D)) {
-		m_Position.x += movementSpeed;
+		velocity.x += speed;
 		m_isFacingLeft = false;
-		m_IsMoving = true;
 	}
 
-	m_Sprite.setPosition(m_Position);
+	if (velocity.x != 0 || velocity.y != 0) m_IsMoving = true;
+
+	// 3. Apply velocity to the Box2D body
+	b2Body_SetLinearVelocity(m_Body, velocity);
+
+	// 4. SYNC: Make the Sprite follow the Physics Body
+	b2Vec2 physicsPos = b2Body_GetPosition(m_Body);
+	m_Sprite.setPosition({ physicsPos.x, physicsPos.y });
 
 	//Screen Borders
 	if (m_Position.x > 800 - m_Sprite.getOrigin().x / 2.f) {
