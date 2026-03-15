@@ -1,6 +1,7 @@
 #include "Player.h"
 
 Player::Player(b2WorldId& worldId)
+	: Character(worldId)
 {
 	m_IdleTexture.loadFromFile("CharactersSprites/Soldier/Soldier/Soldier-Idle.png");
 	m_WalkTexture.loadFromFile("CharactersSprites/Soldier/Soldier/Soldier-Walk.png");
@@ -9,102 +10,90 @@ Player::Player(b2WorldId& worldId)
 	m_DeathTexture.loadFromFile("CharactersSprites/Soldier/Soldier/Soldier-Death.png");
 	m_Sprite.setTexture(m_IdleTexture);
 
-	m_Position = { 100, 250 };
-	m_Sprite.setPosition(m_Position);
-
-	bodyDef.position = { 100.0f, 250.0f };
-	m_Body = b2CreateBody(worldId, &bodyDef);
+    b2Body_SetTransform(m_Body, { 3.f, 8.f }, (b2Rot)0.0f);
 }
 
 void Player::update(float deltaTime)
-{
+{   
 	attack(deltaTime);
-	if (!m_IsAttacking) {
+
+	if (!m_IsAttacking)
 		movement(deltaTime);
-	}
+
+	b2Vec2 pos = b2Body_GetPosition(m_Body);
+
+	m_Sprite.setPosition({
+		pos.x * 30,
+		pos.y * 30
+		});
+}
+
+void Player::updateAnimation(float deltaTime)
+{
+    if (m_IsMoving)
+    {
+        if (m_CurrentState != Walk)
+            changeState(Walk);
+
+        m_WalkAnimation.update(deltaTime);
+        m_WalkAnimation.applyToSprite(m_Sprite);
+    }
+    else
+    {
+        if (m_CurrentState != Idle)
+            changeState(Idle);
+
+        m_IdleAnimation.update(deltaTime);
+        m_IdleAnimation.applyToSprite(m_Sprite);
+    }
+
+    float flip = m_isFacingLeft ? -m_Scale : m_Scale;
+    m_Sprite.setScale({ flip, m_Scale });
 }
 
 void Player::movement(float deltaTime)
 {
-	m_IsMoving = false;
-	float movementSpeed = m_Speed * deltaTime;
+    if (m_KnockbackTimer > 0)
+        return;
 
-	//Sprinting Logic
-	bool shiftPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::LShift);
-	if (shiftPressed) {
-		movementSpeed = m_RunningSpeed * deltaTime;
-		m_WalkAnimation.setFrameTime(.05f);
-	}
-	if (!shiftPressed && m_ShiftHeld) {
-		m_WalkAnimation.setFrameTime(0.15f);
-	}
-	m_ShiftHeld = shiftPressed;
+    float speed = sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::LShift)
+        ? m_RunningSpeed
+        : m_Speed;
 
-	//Movement inputs
-	// 1. Check if we are currently being knocked back (stunned)
-	// If you haven't added m_KnockbackTimer yet, do so in update()
-	if (m_KnockbackTimer > 0) return;
+    b2Vec2 velocity = { 0.0f, 0.0f };
 
-	m_IsMoving = false;
-	b2Vec2 velocity = { 0.0f, 0.0f };
-	float speed = shiftPressed ? m_RunningSpeed : m_Speed;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::W))
+        velocity.y -= 1.0f;
 
-	// 2. Set velocity vectors instead of positions
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::W)) velocity.y -= speed;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::S)) velocity.y += speed;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::A)) {
-		velocity.x -= speed;
-		m_isFacingLeft = true;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::D)) {
-		velocity.x += speed;
-		m_isFacingLeft = false;
-	}
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::S))
+        velocity.y += 1.0f;
 
-	if (velocity.x != 0 || velocity.y != 0) m_IsMoving = true;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::A))
+    {
+        velocity.x -= 1.0f;
+        m_isFacingLeft = true;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::D))
+    {
+        velocity.x += 1.0f;
+        m_isFacingLeft = false;
+    }
 
-	// 3. Apply velocity to the Box2D body
-	b2Body_SetLinearVelocity(m_Body, velocity);
+    m_IsMoving = (velocity.x != 0 || velocity.y != 0);
 
-	// 4. SYNC: Make the Sprite follow the Physics Body
-	b2Vec2 physicsPos = b2Body_GetPosition(m_Body);
-	m_Sprite.setPosition({ physicsPos.x, physicsPos.y });
+    if (m_IsMoving)
+    {
+        float length = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
+        velocity.x /= length;
+        velocity.y /= length;
 
-	//Screen Borders
-	if (m_Position.x > 800 - m_Sprite.getOrigin().x / 2.f) {
-		m_Position.x = 800 - m_Sprite.getOrigin().x / 2.f;
-	}
-	//Left
-	if (m_Position.x < m_Sprite.getOrigin().x / 2.f) {
-		m_Position.x = m_Sprite.getOrigin().x / 2.f;
-	}
-	if (m_Position.y > 600 - m_Sprite.getOrigin().x / 2.f) {
-		m_Position.y = 600 - m_Sprite.getOrigin().x / 2.f;
-	}
-	//Top
-	if (m_Position.y < m_Sprite.getOrigin().x / 2.f) {
-		m_Position.y = m_Sprite.getOrigin().x / 2.f;
-	}
+        velocity.x *= speed;
+        velocity.y *= speed;
+    }
 
-	//Select proper sprite animations of movement
-	if (m_IsMoving)
-	{
-		if (m_CurrentState != Walk)
-			changeState(Walk);
+    b2Body_SetLinearVelocity(m_Body, velocity);
 
-		m_WalkAnimation.update(deltaTime);
-		m_WalkAnimation.applyToSprite(m_Sprite);
-	}
-	else {
-		if (m_CurrentState != Idle)
-			changeState(Idle);
-
-		m_IdleAnimation.update(deltaTime);
-		m_IdleAnimation.applyToSprite(m_Sprite);
-	}
-
-	float flip = m_isFacingLeft ? -m_Scale : m_Scale;
-	m_Sprite.setScale({ flip, m_Scale });
+    updateAnimation(deltaTime);
 }
 
 void Player::attack(float deltaTime)

@@ -4,7 +4,7 @@
 class Enemy : public Character
 {
 public:
-	Enemy();
+	Enemy(b2WorldId& worldId);
 
 	void update(float deltaTime) override;
 

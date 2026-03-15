@@ -28,8 +28,33 @@ int main()
     worldDef.gravity = { 0.0f, 0.0f };
     b2WorldId worldId = b2CreateWorld(&worldDef);
 
+    b2BodyDef wallDef = b2DefaultBodyDef();
+    wallDef.type = b2_staticBody;
+    b2ShapeDef shapeDef = b2DefaultShapeDef();
+    float SCALE = 30.0f;
+    // TOP WALL
+    wallDef.position = { (SCREEN_WIDTH / 2.f) / SCALE, 0.f };
+    b2BodyId topWall = b2CreateBody(worldId, &wallDef);
+    b2Polygon topShape = b2MakeBox((SCREEN_WIDTH / 2.f) / SCALE, 10.f / SCALE);
+    b2CreatePolygonShape(topWall, &shapeDef, &topShape);
+    // BOTTOM WALL
+    wallDef.position = { (SCREEN_WIDTH / 2.f) / SCALE, SCREEN_HEIGHT / SCALE };
+    b2BodyId bottomWall = b2CreateBody(worldId, &wallDef);
+    b2Polygon bottomShape = b2MakeBox((SCREEN_WIDTH / 2.f) / SCALE, 10.f / SCALE);
+    b2CreatePolygonShape(bottomWall, &shapeDef, &bottomShape);
+    // LEFT WALL
+    wallDef.position = { 0.f, (SCREEN_HEIGHT / 2.f) / SCALE };
+    b2BodyId leftWall = b2CreateBody(worldId, &wallDef);
+    b2Polygon leftShape = b2MakeBox(10.f / SCALE, (SCREEN_HEIGHT / 2.f) / SCALE);
+    b2CreatePolygonShape(leftWall, &shapeDef, &leftShape);
+    // RIGHT WALL
+    wallDef.position = { SCREEN_WIDTH / SCALE, (SCREEN_HEIGHT / 2.f) / SCALE };
+    b2BodyId rightWall = b2CreateBody(worldId, &wallDef);
+    b2Polygon rightShape = b2MakeBox(10.f / SCALE, (SCREEN_HEIGHT / 2.f) / SCALE);
+    b2CreatePolygonShape(rightWall, &shapeDef, &rightShape);
+
     Player soldier = Player(worldId);
-    Enemy orc;
+    Enemy orc = Enemy(worldId);
 
     while (window.isOpen())
     {
@@ -67,6 +92,8 @@ int main()
 
         //drawBounds(soldier.getCharBounds(), sf::Color::Red);
         //drawBounds(orc.getCharBounds(), sf::Color::Green);
+
+        b2World_Step(worldId, deltaTime.asSeconds(), 4);
 
         window.display();
     }

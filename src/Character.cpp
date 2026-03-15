@@ -1,6 +1,6 @@
 #include "Character.h"
 
-Character::Character() {
+Character::Character(b2WorldId& worldId) : m_WorldId(worldId) {
 		m_Sprite.setScale({ m_Scale,m_Scale });
 		m_Sprite.setOrigin({ 50.f,50.f });
 
@@ -31,8 +31,15 @@ Character::Character() {
 
 		changeState(Idle);
 
+		m_WorldId = worldId;
 		bodyDef.type = b2_dynamicBody;
 		bodyDef.linearDamping = 5.0f;
+		m_Body = b2CreateBody(worldId, &bodyDef);
+
+		b2Polygon box = b2MakeBox(0.5f, 0.5f);
+		b2ShapeDef shapeDef = b2DefaultShapeDef();
+		shapeDef.density = 1.0f;
+		b2CreatePolygonShape(m_Body, &shapeDef, &box);
 }
 
 void Character::update(float deltaTime) {
@@ -76,7 +83,7 @@ void Character::knockback()
 {
 	if (!b2Body_IsValid(m_Body)) return;
 
-	float knockbackMagnitude = 5000.0f;
+	float knockbackMagnitude = 5.0f;
 
 	b2Vec2 impulse;
 	if (m_isFacingLeft) {

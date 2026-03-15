@@ -13,7 +13,7 @@ enum AnimationStates {
 
 class Character {
 	public:
-		Character();
+		Character(b2WorldId& worldId);
 
 		virtual void update(float deltaTime);
 		void draw(sf::RenderWindow& window);
@@ -30,6 +30,7 @@ class Character {
 		const int GetCharDamage() const;
 
 	protected:
+		b2WorldId& m_WorldId;
 		b2BodyId m_Body;
 		b2BodyDef bodyDef = b2DefaultBodyDef();
 

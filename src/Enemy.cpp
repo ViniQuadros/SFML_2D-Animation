@@ -1,6 +1,7 @@
 #include "Enemy.h"
 
-Enemy::Enemy()
+Enemy::Enemy(b2WorldId& worldId)
+	: Character(worldId)
 {
 	m_IdleTexture.loadFromFile("CharactersSprites/Orc/Orc/Orc-Idle.png");
 	m_WalkTexture.loadFromFile("CharactersSprites/Orc/Orc/Orc-Walk.png");
