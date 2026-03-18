@@ -8,7 +8,9 @@
 enum AnimationStates {
 	Idle,
 	Walk,
-	Attack
+	Attack,
+	Hurt,
+	Death
 };
 
 class Character {

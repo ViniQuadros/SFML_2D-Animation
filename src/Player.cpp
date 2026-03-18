@@ -15,17 +15,17 @@ Player::Player(b2WorldId& worldId)
 
 void Player::update(float deltaTime)
 {   
-	attack(deltaTime);
+    Character::update(deltaTime);
 
+    b2Vec2 pos = b2Body_GetPosition(m_Body);
+    m_Sprite.setPosition({
+        pos.x * 30,
+        pos.y * 30
+        });
+
+	attack(deltaTime);
 	if (!m_IsAttacking)
 		movement(deltaTime);
-
-	b2Vec2 pos = b2Body_GetPosition(m_Body);
-
-	m_Sprite.setPosition({
-		pos.x * 30,
-		pos.y * 30
-		});
 }
 
 void Player::updateAnimation(float deltaTime)
@@ -61,13 +61,10 @@ void Player::movement(float deltaTime)
         : m_Speed;
 
     b2Vec2 velocity = { 0.0f, 0.0f };
-
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::W))
         velocity.y -= 1.0f;
-
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::S))
         velocity.y += 1.0f;
-
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::A))
     {
         velocity.x -= 1.0f;
@@ -80,7 +77,6 @@ void Player::movement(float deltaTime)
     }
 
     m_IsMoving = (velocity.x != 0 || velocity.y != 0);
-
     if (m_IsMoving)
     {
         float length = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
@@ -90,7 +86,6 @@ void Player::movement(float deltaTime)
         velocity.x *= speed;
         velocity.y *= speed;
     }
-
     b2Body_SetLinearVelocity(m_Body, velocity);
 
     updateAnimation(deltaTime);

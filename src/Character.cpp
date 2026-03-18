@@ -68,10 +68,12 @@ void Character::takeDamage(int damage, float deltaTime)
 		m_DeathAnimation.update(deltaTime);
 		m_DeathAnimation.applyToSprite(m_Sprite);
 		m_Health = 0;
+		changeState(Death);
 	}
 	else {
 		m_HurtAnimation.update(deltaTime);
 		m_HurtAnimation.applyToSprite(m_Sprite);
+		changeState(Hurt);
 
 		this->knockback();
 	}
@@ -126,6 +128,8 @@ void Character::changeState(AnimationStates newState)
 		case Idle: m_Sprite.setTexture(m_IdleTexture); break;
 		case Walk: m_Sprite.setTexture(m_WalkTexture); break;
 		case Attack: m_Sprite.setTexture(m_AttackTexture); break;
+		case Hurt: m_Sprite.setTexture(m_HurtTexture); break;
+		case Death: m_Sprite.setTexture(m_DeathTexture); break;
 		default: break;
 	}
 
